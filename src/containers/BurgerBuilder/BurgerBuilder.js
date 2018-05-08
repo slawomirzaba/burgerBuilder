@@ -72,12 +72,16 @@ class BurgerBuilder extends React.Component {
 
     }
 
-    turnOnPurchaseMode = () => {
+    purchaseStartHandler = () => {
         this.setState({ isPurchasing: true });
     }
 
-    turnOffPurchaseMode = () => {
+    purchaseCancelHandler = () => {
         this.setState({ isPurchasing: false });
+    }
+
+    purchaseContinueHandler = () => {
+        alert('CONTINUE!')
     }
 
     render() {
@@ -85,8 +89,12 @@ class BurgerBuilder extends React.Component {
             <React.Fragment>
                 <Modal
                     show={this.state.isPurchasing}
-                    onCloseModal={this.turnOffPurchaseMode}>
-                    <OrderSummary ingredients={this.state.ingredients}></OrderSummary>
+                    onCloseModal={this.purchaseCancelHandler}>
+                    <OrderSummary
+                        ingredients={this.state.ingredients}
+                        price={this.state.totalPrice}
+                        onCancel={this.purchaseCancelHandler}
+                        onSubmit={this.purchaseContinueHandler} />
                 </Modal>
                 <Burger ingredients={this.state.ingredients} />
                 <BuildControls
@@ -95,7 +103,7 @@ class BurgerBuilder extends React.Component {
                     diabledLessButtonInfo={this.getDisabledInfo()}
                     isPurchasable={this.state.isPurchasable}
                     totalPrice={this.state.totalPrice}
-                    makePurchase={this.turnOnPurchaseMode} />
+                    makePurchase={this.purchaseStartHandler} />
             </React.Fragment>
         )
     }
