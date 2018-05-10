@@ -1,41 +1,52 @@
 import React from 'react'
+import propTypes from 'prop-types';
 import classes from './BuildControls.css'
 import BuildControl from './BuildControl/BuildControl'
 
-const buildControls = (props) => {
-    const controls = [
-        { label: 'Salad', type: 'salad' },
-        { label: 'Cheese', type: 'cheese' },
-        { label: 'Bacon', type: 'bacon' },
-        { label: 'Meat', type: 'meat' }
-    ];
+const controls = [
+    { label: 'Salad', type: 'salad' },
+    { label: 'Cheese', type: 'cheese' },
+    { label: 'Bacon', type: 'bacon' },
+    { label: 'Meat', type: 'meat' }
+];
 
-    return (
-        <div className={classes.BuildControls}>
-            <p>Total price: <strong>{props.totalPrice.toFixed(2)}</strong>$</p>
-            {getControlsJsx()}
-            <button
-                className={classes.OrderButton}
-                disabled={!props.isPurchasable}
-                onClick={props.makePurchase}>
-                ORDER NOW
-            </button>
-        </div>
-    )
-
-    function getControlsJsx() {
+class BuildControls extends React.Component {
+    getControlsJsx = () => {
         return controls.map((control) => {
             return (
                 <BuildControl
-                    onAddIngredient={() => props.onAddIngredient(control.type)}
-                    onRemoveIngredient={() => props.onRemoveIngredient(control.type)}
-                    isDisabledLess={props.diabledLessButtonInfo[control.type]}
+                    onAddIngredient={() => this.props.onAddIngredient(control.type)}
+                    onRemoveIngredient={() => this.props.onRemoveIngredient(control.type)}
+                    isDisabledLess={this.props.diabledLessButtonInfo[control.type]}
                     label={control.label}
                     key={control.label} />
             )
-        })
+        });
     }
 
+    render() {
+        return (
+            <div className={classes.BuildControls}>
+                <p>Total price: <strong>{this.props.totalPrice.toFixed(2)}</strong>$</p>
+                {this.getControlsJsx()}
+                <button
+                    className={classes.OrderButton}
+                    disabled={!this.props.isPurchasable}
+                    onClick={this.props.makePurchase}>
+                    ORDER NOW
+                </button>
+            </div>
+        )
+    }
 }
 
-export default buildControls;
+BuildControls.propTypes = {
+    isPurchasable: propTypes.bool.isRequired,
+    diabledLessButtonInfo: propTypes.object.isRequired,
+    onRemoveIngredient: propTypes.func.isRequired,
+    onAddIngredient: propTypes.func.isRequired,
+    makePurchase: propTypes.func.isRequired,
+    totalPrice: propTypes.number.isRequired
+};
+
+export default BuildControls;
