@@ -1,9 +1,13 @@
 import React from 'react';
 import _ from 'lodash';
+import queryString from 'query-string';
 import Burger from '../../components/Burger/Burger';
 import BuildControls from '../../components/Burger/BuildControls/BuildControls';
 import Modal from '../../components/UI/Modal/Modal';
 import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
+import axios from '../../AxiosOrder';
+import Spinner from '../../components/UI/Spinner/Spinner';
+import withHandleError from '../../hoc/withHandleError';
 
 const INGREDIENTS_PRICE = {
     salad: 0.4,
@@ -14,15 +18,22 @@ const INGREDIENTS_PRICE = {
 
 class BurgerBuilder extends React.Component {
     state = {
-        ingredients: {
-            salad: 0,
-            bacon: 0,
-            cheese: 0,
-            meat: 0
-        },
+        ingredients: null,
         totalPrice: 4,
         isPurchasable: false,
-        isPurchasing: false
+        isPurchasing: false,
+        isLoadingOrder: false,
+        error: false
+    }
+
+    componentDidMount() {
+        axios.get('/ingredients.json')
+            .then((response) => {
+                this.setState({ ingredients: response.data })
+            })
+            .catch(error => {
+                this.setState({ error: true });
+            });
     }
 
     updatePurchaseState = () => {
@@ -81,20 +92,33 @@ class BurgerBuilder extends React.Component {
     }
 
     purchaseContinueHandler = () => {
-        alert('CONTINUE!')
+        const query = queryString.stringify({
+            ...this.state.ingredients,
+            price: this.state.totalPrice
+        });
+        this.props.history.push({
+            pathname: '/checkout',
+            search: `?${query}`
+        });
+    }
+
+    getOrderSummary = () => {
+        return <OrderSummary
+            ingredients={this.state.ingredients}
+            price={this.state.totalPrice}
+            onCancel={this.purchaseCancelHandler}
+            onSubmit={this.purchaseContinueHandler} />
     }
 
     render() {
+        if (this.state.error) return <p> Ingredient cannot be loaded!</p>
+        if (!this.state.ingredients) return <Spinner></Spinner>
         return (
             <React.Fragment>
                 <Modal
                     show={this.state.isPurchasing}
                     onCloseModal={this.purchaseCancelHandler}>
-                    <OrderSummary
-                        ingredients={this.state.ingredients}
-                        price={this.state.totalPrice}
-                        onCancel={this.purchaseCancelHandler}
-                        onSubmit={this.purchaseContinueHandler} />
+                    {this.state.isLoadingOrder ? <Spinner /> : this.getOrderSummary()}
                 </Modal>
                 <Burger ingredients={this.state.ingredients} />
                 <BuildControls
@@ -109,4 +133,4 @@ class BurgerBuilder extends React.Component {
     }
 }
 
-export default BurgerBuilder
+export default withHandleError(BurgerBuilder, axios);
