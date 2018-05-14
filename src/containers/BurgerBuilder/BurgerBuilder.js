@@ -111,8 +111,8 @@ class BurgerBuilder extends React.Component {
     }
 
     render() {
-        if (this.state.error) return <p> Ingredient cannot be loaded!</p>
-        if (!this.state.ingredients) return <Spinner></Spinner>
+        if (this.state.error) return <p> Ingredients cannot be loaded!</p>;
+        if (!this.state.ingredients) return <Spinner></Spinner>;
         return (
             <React.Fragment>
                 <Modal
@@ -129,7 +129,7 @@ class BurgerBuilder extends React.Component {
                     totalPrice={this.state.totalPrice}
                     makePurchase={this.purchaseStartHandler} />
             </React.Fragment>
-        )
+        );
     }
 }
 

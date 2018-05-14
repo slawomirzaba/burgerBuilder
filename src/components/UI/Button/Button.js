@@ -8,7 +8,10 @@ const button = (props) => {
     }
 
     return (
-        <button onClick={props.clicked} className={getProperClassesForButton()}>
+        <button
+            disabled={props.disabled}
+            onClick={props.clicked}
+            className={getProperClassesForButton()}>
             {props.children}
         </button>
     );
