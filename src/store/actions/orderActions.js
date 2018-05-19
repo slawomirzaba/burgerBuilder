@@ -1,0 +1,89 @@
+import _ from 'lodash';
+
+import actionTypes from './actionTypes';
+import axios from '../../AxiosOrder';
+
+export const initPurchase = () => {
+    return {
+        type: actionTypes.INIT_PURCHASE
+    };
+}
+
+const startPurchasingBurger = () => {
+    return {
+        type: actionTypes.START_PURCHASING_BURGER
+    };
+}
+
+const successPurchasingBurger = () => {
+    return {
+        type: actionTypes.SUCCESS_PURCHASING_BURGER
+    };
+}
+
+const failPurchasingBurger = () => {
+    return {
+        type: actionTypes.FAIL_PURCHASING_BURGER
+    };
+}
+
+
+export const checkoutOrder = (order) => {
+
+    return (dispatch) => {
+        dispatch(startPurchasingBurger());
+
+        axios.post('/orders.json', order)
+            .then((responseData) => {
+                dispatch(successPurchasingBurger());
+            })
+            .catch((error) => {
+                dispatch(failPurchasingBurger());
+            });
+    }
+}
+
+const fetchOrdersStart = () => {
+    return {
+        type: actionTypes.FETCH_ORDERS_START
+    }
+}
+
+const fetchOrdersFail = () => {
+    return {
+        type: actionTypes.FETCH_ORDERS_FAIL
+    }
+}
+
+const setOrders = (orders) => {
+    return {
+        type: actionTypes.SET_ORDERS,
+        payload: {orders: orders}
+    }
+}
+
+export const fetchOrders = () => {
+    return (dispatch) => {
+        dispatch(fetchOrdersStart());
+
+        axios.get('/orders.json')
+            .then(responseResult => {
+                const orders = getOrders(responseResult);
+                dispatch(setOrders(orders));
+            })
+            .catch(() => {
+                dispatch(fetchOrdersFail());
+            })
+    }
+
+    function getOrders(response) {
+        return _.map(response.data, (value, key) => {
+            const order = {
+                ...value,
+                id: key
+            }
+
+            return order;
+        })
+    }
+}

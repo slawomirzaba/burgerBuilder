@@ -6,7 +6,7 @@ const input = (props) => {
     let errorMessage = null;
     const classNames = [classes.InputElement];
     if (!props.isValid && props.isTouched) {
-        errorMessage = <p1>Please provide a valid value!</p1>
+        errorMessage = <p>Please provide a valid value!</p>
         classNames.push(classes.Invalid)
     }
 

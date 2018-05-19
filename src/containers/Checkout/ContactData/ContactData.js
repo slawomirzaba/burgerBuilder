@@ -8,6 +8,7 @@ import classes from './ContactData.css';
 import Input from '../../../components/UI/Input/Input';
 import axios from '../../../AxiosOrder';
 import withHandleError from '../../../hoc/withHandleError';
+import * as actions from '../../../store/actions/index';
 
 class ContactData extends React.Component {
     state = {
@@ -88,14 +89,12 @@ class ContactData extends React.Component {
                 touched: false
             }
         },
-        formValid: false,
-        isLoadingOrder: false
+        formValid: false
     }
 
     checkoutHandler = (event) => {
         event.preventDefault();
 
-        this.setState({ isLoadingOrder: true });
         const customerData = _.reduce(this.state.form, (acc, properies, inputId) => {
             acc[inputId] = properies.value;
             return acc;
@@ -105,15 +104,7 @@ class ContactData extends React.Component {
             price: this.props.totalPrice,
             customer: customerData
         }
-
-        axios.post('/orders.json', order)
-            .then((responseData) => {
-                this.setState({ isLoadingOrder: false });
-                this.props.history.replace('/');
-            })
-            .catch((error) => {
-                this.setState({ isLoadingOrder: false });
-            });
+        this.props.checkoutOrderHandler(order);
     }
 
     checkInputValid = (value, rules) => {
@@ -172,7 +163,7 @@ class ContactData extends React.Component {
 
     render() {
         let content = null;
-        if (this.state.isLoadingOrder) content = <Spinner />;
+        if (this.props.isLoading) content = <Spinner />;
         else
             content = (
                 <form onSubmit={this.checkoutHandler}>
@@ -192,9 +183,16 @@ class ContactData extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        ingredients: state.ingredients,
-        totalPrice: state.totalPrice
+        ingredients: state.burger.ingredients,
+        totalPrice: state.burger.totalPrice,
+        isLoading: state.order.isLoading
     };
 }
 
-export default connect(mapStateToProps)(withHandleError(ContactData, axios));
+const mapDispatchToProps = (dispatch) => {
+    return {
+        checkoutOrderHandler: (order) => dispatch(actions.checkoutOrder(order))
+    };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withHandleError(ContactData, axios));

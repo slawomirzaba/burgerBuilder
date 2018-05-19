@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route } from 'react-router-dom';
+import { Route, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 
@@ -16,6 +16,8 @@ class Checkout extends React.Component {
     }
 
     render() {
+        if (!this.props.ingredients || this.props.ordered) return <Redirect to='/'></Redirect>;
+
         return (
             <div>
                 <CheckoutSummary
@@ -33,7 +35,8 @@ class Checkout extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        ingredients: state.ingredients
+        ingredients: state.burger.ingredients,
+        ordered: state.order.ordered
     };
 }
 
