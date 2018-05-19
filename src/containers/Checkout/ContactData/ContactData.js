@@ -1,5 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
+import { connect } from 'react-redux';
+
 import Button from '../../../components/UI/Button/Button';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import classes from './ContactData.css';
@@ -188,4 +190,11 @@ class ContactData extends React.Component {
     }
 }
 
-export default withHandleError(ContactData, axios);
+const mapStateToProps = (state) => {
+    return {
+        ingredients: state.ingredients,
+        totalPrice: state.totalPrice
+    };
+}
+
+export default connect(mapStateToProps)(withHandleError(ContactData, axios));
