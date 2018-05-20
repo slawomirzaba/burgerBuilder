@@ -10,7 +10,7 @@ import Spinner from '../../components/UI/Spinner/Spinner'
 import * as actions from '../../store/actions/index';
 import errorsMapping from './errorsMapping';
 
-class Auth extends Component {
+export class Auth extends Component {
     state = {
         form: {
             email: {
@@ -146,7 +146,12 @@ class Auth extends Component {
             <React.Fragment>
                 <form onSubmit={this.authHandler}>
                     {this.getInputs()}
-                    <Button btnType="Success" disabled={!this.state.formValid}>{this.state.isSignUp ? 'SIGN UP' : 'SIGN IN'}</Button>
+                    <Button
+                        id="submitButton"
+                        btnType="Success"
+                        disabled={!this.state.formValid}>
+                        {this.state.isSignUp ? 'SIGN UP' : 'SIGN IN'}
+                    </Button>
                 </form>
                 <Button btnType="Danger" clicked={this.changeAuthMethod}>Switch to {this.state.isSignUp ? 'SIGN IN' : 'SIGN UP'}</Button>
             </React.Fragment>

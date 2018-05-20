@@ -10,7 +10,7 @@ import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 import ingredientsReducer from './store/reducers/ingredientsReducer';
 import orderReducer from './store/reducers/orderReducer';
-import authReducer from './store/reducers/authRedcuer';
+import authReducer from './store/reducers/authReducer';
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const rootReducer = combineReducers({ burger: ingredientsReducer, order: orderReducer, auth: authReducer });
