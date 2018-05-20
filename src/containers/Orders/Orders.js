@@ -10,12 +10,13 @@ import * as actions from '../../store/actions/index';
 
 class Orders extends React.Component {
     componentDidMount() {
-        this.props.fetchOrders();
+        this.props.fetchOrders(this.props.idToken, this.props.localId);
     }
 
     render() {
         if (this.props.isLoading) return <Spinner />
         if (!this.props.orders) return <p>Fetch orders failed!</p>
+        if (!this.props.orders.length) return <p>NO ORDERS</p>
 
         return this.props.orders.map((order) => {
             return (
@@ -31,13 +32,15 @@ class Orders extends React.Component {
 const mapStateToProps = (state) => {
     return {
         orders: state.order.orders,
-        isLoading: state.order.isLoading
+        isLoading: state.order.isLoading,
+        idToken: state.auth.idToken,
+        localId: state.auth.localId
     }
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        fetchOrders: () => dispatch(actions.fetchOrders())
+        fetchOrders: (token, localId) => dispatch( actions.fetchOrders(token, localId) )
     }
 }
 

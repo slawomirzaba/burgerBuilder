@@ -12,12 +12,12 @@ const sitedrawer = (props) => {
     return (
         <React.Fragment>
             <Backdrop show={props.isOpen} clicked={props.close}></Backdrop>
-            <div className={classNames}>
+            <div className={classNames} onClick={props.close}>
                 <div className={classes.Logo}>
                     <Logo />
                 </div>
                 <nav>
-                    <NavigationItems />
+                    <NavigationItems isAuthenticated={props.isAuthenticated} />
                 </nav>
             </div>
         </React.Fragment>

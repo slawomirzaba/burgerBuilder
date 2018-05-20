@@ -36,7 +36,12 @@ const removeIngredient = (state, action) => {
 
 const setIngredientsFromServer = (state, action) => {
     return updateObject(state, {
-        ingredients: action.payload.ingredients,
+        ingredients: {
+            salad: action.payload.ingredients.salad,
+            bacon: action.payload.ingredients.bacon,
+            cheese: action.payload.ingredients.cheese,
+            meat: action.payload.ingredients.meat
+        },
         serverError: false,
         totalPrice: 4
     })

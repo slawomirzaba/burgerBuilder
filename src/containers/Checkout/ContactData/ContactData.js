@@ -18,7 +18,8 @@ class ContactData extends React.Component {
                 elementConfig: {
                     type: 'text',
                     name: 'name',
-                    placeholder: 'Your Name'
+                    placeholder: 'Your Name',
+                    autoComplete: 'off'
                 },
                 value: '',
                 validation: {
@@ -32,11 +33,13 @@ class ContactData extends React.Component {
                 elementConfig: {
                     type: 'email',
                     name: 'email',
-                    placeholder: 'Your E-mail'
+                    placeholder: 'Your E-mail',
+                    autoComplete: 'off'
                 },
                 value: '',
                 validation: {
-                    required: true
+                    required: true,
+                    isEmail: true
                 },
                 valid: false,
                 touched: false
@@ -46,7 +49,8 @@ class ContactData extends React.Component {
                 elementConfig: {
                     type: 'text',
                     name: 'street',
-                    placeholder: 'Your Street'
+                    placeholder: 'Your Street',
+                    autoComplete: 'off'
                 },
                 value: '',
                 validation: {
@@ -60,7 +64,8 @@ class ContactData extends React.Component {
                 elementConfig: {
                     type: 'text',
                     name: 'postalCode',
-                    placeholder: 'Your Postal Code'
+                    placeholder: 'Your Postal Code',
+                    autoComplete: 'off'
                 },
                 value: '',
                 validation: {
@@ -102,9 +107,10 @@ class ContactData extends React.Component {
         const order = {
             ingredients: this.props.ingredients,
             price: this.props.totalPrice,
-            customer: customerData
+            customer: customerData,
+            userId: this.props.localId
         }
-        this.props.checkoutOrderHandler(order);
+        this.props.checkoutOrderHandler(order, this.props.idToken);
     }
 
     checkInputValid = (value, rules) => {
@@ -120,8 +126,13 @@ class ContactData extends React.Component {
             isValid = isValid && value.length <= rules.minLength;
 
         if (rules.isNumeric) {
-            const pattern = /^\d+$/;
-            isValid = pattern.test(value) && isValid;
+            const numericPattern = /^\d+$/;
+            isValid = numericPattern.test(value) && isValid;
+        }
+
+        if (rules.isEmail) {
+            const emailPattern = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
+            isValid = emailPattern.test(value) && isValid;
         }
 
         return isValid;
@@ -185,13 +196,15 @@ const mapStateToProps = (state) => {
     return {
         ingredients: state.burger.ingredients,
         totalPrice: state.burger.totalPrice,
-        isLoading: state.order.isLoading
+        isLoading: state.order.isLoading,
+        idToken: state.auth.idToken,
+        localId: state.auth.localId
     };
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        checkoutOrderHandler: (order) => dispatch(actions.checkoutOrder(order))
+        checkoutOrderHandler: (order, token) => dispatch(actions.checkoutOrder(order, token))
     };
 }
 

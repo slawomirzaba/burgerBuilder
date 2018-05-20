@@ -33,7 +33,7 @@ class BuildControls extends React.Component {
                     className={classes.OrderButton}
                     disabled={!this.props.isPurchasable}
                     onClick={this.props.makePurchase}>
-                    ORDER NOW
+                    {this.props.isAuthenticated ? 'ORDER NOW' : 'SIGN IN BEFORE'}
                 </button>
             </div>
         )
